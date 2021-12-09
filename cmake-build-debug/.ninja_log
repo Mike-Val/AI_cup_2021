@@ -1,0 +1,9 @@
+# ninja log v5
+18	1891	1638960347334596442	CMakeFiles/AI_cup_2021.dir/eigen-3.4.0/bench/btl/data/regularize.cxx.o	141bafb87fc625e4
+0	71	1639076589784054497	build.ninja	83e831a286a867b5
+2187	2357	1639076551783286693	AI_cup_2021	6bb7f955c06addc2
+19	2039	1638960347485925569	CMakeFiles/AI_cup_2021.dir/eigen-3.4.0/bench/btl/data/smooth.cxx.o	bead042e914fa248
+18	1973	1638960347420726264	CMakeFiles/AI_cup_2021.dir/eigen-3.4.0/bench/btl/data/mean.cxx.o	4a28d72e19cb953
+7	2187	1639076551604448597	CMakeFiles/AI_cup_2021.dir/main.cpp.o	17499721f55298d3
+4	1649	1639076592309760700	CMakeFiles/AI_cup_2021.dir/main.cpp.o	3addf09b50238f45
+1649	1709	1639076592378201386	AI_cup_2021	6bb7f955c06addc2

@@ -1,0 +1,3 @@
+/Users/mike/Desktop/AI_cup_2021/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/mike/Desktop/AI_cup_2021/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/mike/Desktop/AI_cup_2021/cmake-build-debug/CMakeFiles/AI_cup_2021.dir
