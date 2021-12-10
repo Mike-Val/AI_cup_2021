@@ -23,7 +23,7 @@ public:
 	int best_known_solution;
 	vector<vector<int>> adjacency_matrix;
 
-	Problem(filesystem::path path) {
+	explicit Problem(const filesystem::path& path) {
 		ifstream file(path);
 		if (!file.is_open()) {
 			cout << "Error: file " << path << " not found" << endl;
@@ -43,7 +43,7 @@ public:
 			while (getline(ss, token, ' ')) {
 				row.push_back(token);
 			}
-			if (line.compare("EOF") == 0) break;
+			if (line == "EOF") break;
 			if (i == 1) {name = row.back(); continue;}
 			if (i == 4) {dimension = stoi(row.back()); continue;}
 			if (i == 5) {edge_weight_type = row.back(); continue;}
@@ -62,20 +62,12 @@ public:
 		}
 	}
 
-	void print() {
+	void print() const {
 		cout << "Name: " << name << endl;
 		cout << "Dimension: " << dimension << endl;
 		cout << "Edge weight type: " << edge_weight_type << endl;
 		cout << "Best known solution: " << best_known_solution << endl;
 	}
-
-	// bool check_solution(const vector<int> &solution) {
-	// 	sort(solution.begin(), solution.end());
-	// 	for (int i = 0; i < dimension; i++) {
-	// 		if (solution[i] != i) return false;
-	// 	}
-	// 	return true;
-	// }
 
 	int get_cost(const vector<int> &solution) {
 		int score = 0;
@@ -88,12 +80,6 @@ public:
     double get_error(const vector<int> &sol) {
         return 100 * double(get_cost(sol) - best_known_solution) / best_known_solution;
     }
-
-	// vector<int> get_random_solution(mt19937 &generator) {
-	// 	Eigen::VectorXi solution = Eigen::VectorXi::LinSpaced(dimension, 0, dimension - 1);
-	// 	shuffle(solution.data(), solution.data() + solution.size(), generator);
-	// 	return vector<int>(solution.data(), solution.data() + solution.size());
-	// }
 
 	vector<int> nn() {
 		vector<int> path(dimension);

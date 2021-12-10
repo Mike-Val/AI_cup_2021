@@ -29,7 +29,7 @@ int main() {
 	}
     return 0;
 
-    int n = 100;
+    int n = 1000;
     vector<int> seeds(n);
     vector<int> costs(n);
 

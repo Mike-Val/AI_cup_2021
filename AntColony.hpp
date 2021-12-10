@@ -13,8 +13,8 @@ using namespace std;
 struct Ant {
     vector<int> path;
     vector<bool> visited;
-    int current;
-    int dist;
+    int current = 0;
+    int dist = 0;
 
     Ant() = default;
     void init(int dim) {
@@ -26,7 +26,6 @@ struct Ant {
 };
     
 vector<int> ant_colony(Problem &P, int seed, double alpha, double beta, double rho) {
-//    cout << "Seed: " << seed << endl;
     mt19937 gen(seed);
     uniform_real_distribution<> dis(0.0, 1.0);
 
@@ -113,6 +112,16 @@ vector<int> ant_colony(Problem &P, int seed, double alpha, double beta, double r
 
         // Two opt best ant
         two_opt(P, bestAntSolution, bestAntDist);
+
+        // Two opt random ants
+        for (int i = 0; i < 2; i++) {
+            Ant &randomAnt = ants[int(dis(gen) * total_ants)];
+            two_opt(P, randomAnt.path, randomAnt.dist);
+            if (randomAnt.dist < bestAntDist) {
+                bestAntDist = randomAnt.dist;
+                bestAntSolution = randomAnt.path;
+            }
+        }
 
         // Get best path
         if (bestAntDist < bestGlobalDist) {

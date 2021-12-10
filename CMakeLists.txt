@@ -11,4 +11,4 @@ add_executable(AI_cup_2021
         Problem.hpp
         thread_pool.hpp
         AntColony.hpp
-        LTMatrix.hpp)
+        Matrix.hpp)

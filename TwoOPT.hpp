@@ -21,7 +21,8 @@ int gain(int i, int j, vector<int> &tour, Problem &P) {
     return changed_links_len - old_link_len;
 }
 
-void two_opt(Problem &P, vector<int> &tour, int &len) {
+int two_opt_loop(Problem &P, vector<int> &tour, int &len) {
+    int cross = 0;
     int n = P.dimension - 1;
     for (int i = 1; i < n - 1; i++) {
         for (int j = i + 1; j < n; j++) {
@@ -29,9 +30,18 @@ void two_opt(Problem &P, vector<int> &tour, int &len) {
             if (new_len < len) {
                 swap2opt(tour, i, j);
                 len = new_len;
+                cross += 1;
             }
         }
     }
+    return cross;
+}
+
+void two_opt(Problem &P, vector<int> &tour, int &len) {
+    int cross;
+    do {
+        cross = two_opt_loop(P, tour, len);
+    } while (cross > 0);
 }
 
 
