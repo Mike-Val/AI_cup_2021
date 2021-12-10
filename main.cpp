@@ -10,7 +10,7 @@
 using namespace std;
 
 int main() {
-    Problem problem("/Users/mike/Desktop/AI_cup_2021/problems/ch130.tsp");
+    Problem problem("/Users/mike/Desktop/AI_cup_2021/problems/pcb442.tsp");
     problem.print();
 
     srand(time(NULL));

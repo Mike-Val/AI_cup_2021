@@ -83,23 +83,23 @@ public:
 
 	vector<int> nn() {
 		vector<int> path(dimension);
-		vector<bool> visited(dimension, false);
+		vector<char> visited(dimension, 0);
 		
 		path[0] = 0;
-		visited[0] = true;
+		visited[0] = 1;
 
 		for (int c = 1; c < dimension; c++) {
 			int current = path[c-1];
 			int next_city;
 			int dist = INT_MAX;
 			for (int i = 0; i < dimension; i++) {
-				if (!visited[i] && adjacency_matrix[current][i] < dist) {
+				if (visited[i] == 0 && adjacency_matrix[current][i] < dist) {
 					next_city = i;
 					dist = adjacency_matrix[current][i];
 				}
 			}
 			path[c] = next_city;
-			visited[next_city] = true;
+			visited[next_city] = 1;
 		}
 
 		return path;

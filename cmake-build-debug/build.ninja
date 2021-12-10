@@ -74,7 +74,7 @@ build cmake_object_order_depends_target_AI_cup_2021: phony || CMakeFiles/AI_cup_
 
 build CMakeFiles/AI_cup_2021.dir/main.cpp.o: CXX_COMPILER__AI_cup_2021_Debug /Users/mike/Desktop/AI_cup_2021/main.cpp || cmake_object_order_depends_target_AI_cup_2021
   DEP_FILE = CMakeFiles/AI_cup_2021.dir/main.cpp.o.d
-  FLAGS = -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.0.sdk -std=gnu++17
+  FLAGS = -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX11.0.sdk -Ofast -std=gnu++17
   OBJECT_DIR = CMakeFiles/AI_cup_2021.dir
   OBJECT_FILE_DIR = CMakeFiles/AI_cup_2021.dir
 

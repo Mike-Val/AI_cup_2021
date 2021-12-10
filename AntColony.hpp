@@ -4,15 +4,19 @@
 #include <vector>
 #include <random>
 #include <iostream>
+#include <chrono>
 
 #include "Problem.hpp"
 #include "TwoOPT.hpp"
 
+#define TIME 1
+
 using namespace std;
+using namespace chrono;
 
 struct Ant {
     vector<int> path;
-    vector<bool> visited;
+    vector<char> visited;
     int current = 0;
     int dist = 0;
 
@@ -21,36 +25,44 @@ struct Ant {
         current = 0;
         dist = 0;
         path = vector<int>(dim);
-        visited = vector<bool>(dim, false);
+        visited = vector<char>(dim, 0);
     }
 };
     
 vector<int> ant_colony(Problem &P, int seed, double alpha, double beta, double rho) {
+    // Setup random generator
     mt19937 gen(seed);
     uniform_real_distribution<> dis(0.0, 1.0);
 
+    // Variables to time the execution and don't exceed 180s
+    long long iterTime = 0;
+
+
+    // Setup iteration variables
     double q_0 = 1 - 13.0 / P.dimension;
-
-    int total_ants = 10;
-    
     auto &adjacency = P.adjacency_matrix;
-
     vector<int> bestGlobalSolution = P.nn();
     int bestGlobalDist = P.get_cost(bestGlobalSolution);
+    int total_ants = 10;
+    vector<Ant> ants(total_ants);
+    vector<double> candidates(P.dimension);
 
     // Setup pheromone matrix
     double initial_pheromone = 1.0 / double(bestGlobalDist * P.dimension);
     vector<vector<double>> pheromone(P.dimension, vector<double>(P.dimension, initial_pheromone));
 
-    vector<Ant> ants(total_ants);
-    vector<double> candidates(P.dimension);
 
-    for (int iter = 0; iter < 1000; iter++) {
+    for (int iter = 0; true; iter++) {
+#if TIME
+        // Get initial time of iteration
+        auto start = high_resolution_clock::now();
+#endif
+
         // Initialize all ants to random cities
         for (Ant &a : ants) {
             a.init(P.dimension);
             a.path[a.current] = int(dis(gen) * P.dimension);
-            a.visited[a.path[a.current]] = true;
+            a.visited[a.path[a.current]] = 1;
         }
 
         for (int step = 1; step < P.dimension; step++) {
@@ -60,7 +72,7 @@ vector<int> ant_colony(Problem &P, int seed, double alpha, double beta, double r
                 int maxCity = -1;
                 double sum = 0;
                 for (int c = 0; c < P.dimension; c++) {
-                    if (!ant.visited[c]) {
+                    if (ant.visited[c] == 0) {
                         double prob = pheromone[ant.path[ant.current]][c] * pow(adjacency[ant.path[ant.current]][c], -beta);
                         candidates[c] = prob;
                         sum += prob;
@@ -74,7 +86,7 @@ vector<int> ant_colony(Problem &P, int seed, double alpha, double beta, double r
                 if (q < q_0 || sum == candidates[maxCity]) {// Exploitation
                     ant.dist += adjacency[ant.path[ant.current]][maxCity];
                     ant.path[++ant.current] = maxCity;
-                    ant.visited[maxCity] = true;
+                    ant.visited[maxCity] = 1;
                 } else {
                     // Exploration
 //                    sum -= candidates[maxCity];
@@ -86,7 +98,7 @@ vector<int> ant_colony(Problem &P, int seed, double alpha, double beta, double r
                         if (p < running_sum) {
                             ant.dist += adjacency[ant.path[ant.current]][c];
                             ant.path[++ant.current] = c;
-                            ant.visited[c] = true;
+                            ant.visited[c] = 1;
                             break;
                         }
                     }
@@ -136,6 +148,15 @@ vector<int> ant_colony(Problem &P, int seed, double alpha, double beta, double r
             pheromone[curr][next] = pheromone[curr][next] * (1.0 - alpha) + alpha / bestAntDist;
             pheromone[next][curr] = pheromone[curr][next];
         }
+
+#if TIME
+        // Check if we can iterate once more
+        auto end = high_resolution_clock::now();
+        auto iterDur = duration_cast<milliseconds>(end - start).count();
+        iterTime += iterDur;
+        auto avgIterTime = iterTime / (iter + 1);
+        if (iterTime + avgIterTime >= 175000) return bestGlobalSolution;
+#endif
     }
 
     return bestGlobalSolution;

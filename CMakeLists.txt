@@ -3,6 +3,8 @@ project(AI_cup_2021)
 
 set(CMAKE_CXX_STANDARD 17)
 
+add_compile_options(-Ofast)
+
 add_executable(AI_cup_2021
         TwoOPT.hpp
         Annealing.hpp
