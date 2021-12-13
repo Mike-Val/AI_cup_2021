@@ -37,14 +37,15 @@ vector<int> ant_colony(Problem &P, int seed, double alpha, double beta, double r
     // Variables to time the execution and don't exceed 180s
     long long iterTime = 0;
 
-
     // Setup iteration variables
     bool improved = false;
-    double q_0 = 1 - 13.0 / P.dimension;// q_0 = 1.1;
+    double q_0 = 1 - 13.0 / P.dimension;
     auto &adjacency = P.adjacency_matrix;
     vector<int> bestGlobalSolution = P.nn();
     int bestGlobalDist = P.get_cost(bestGlobalSolution);
-    int total_ants = 5;
+
+    // Setup Ants
+    int total_ants = 10;
     vector<Ant> ants(total_ants);
     vector<double> candidates(P.dimension);
 
@@ -85,7 +86,6 @@ vector<int> ant_colony(Problem &P, int seed, double alpha, double beta, double r
 
                 double q = dis(gen);
                 if (q > q_0 && sum != candidates[maxCity]) {
-//                    cout << "Error" << endl;
                     sum -= candidates[maxCity];
                     candidates[maxCity] = 0;
                     double p = dis(gen) * sum;
@@ -144,26 +144,15 @@ vector<int> ant_colony(Problem &P, int seed, double alpha, double beta, double r
         if (bestAntDist < bestGlobalDist) {
             bestGlobalDist = bestAntDist;
             bestGlobalSolution = bestAntSolution;
-            improved = true;
         }
 
         // Global Update
-//        for (int i = 0; i < P.dimension; i++) {
-//            for (int j = 0; j < P.dimension; j++) {
-//                pheromone[i][j] = pheromone[i][j] * (1.0 - alpha);
-////                pheromone[j][i] = pheromone[i][j];
-//            }
-//        }
-//        if (improved) {
-            improved = false;
-            for (int c = 0; c < P.dimension; c++) {
-                int curr = bestGlobalSolution[c];
-                int next = bestGlobalSolution[(c+1) % P.dimension];
-                pheromone[curr][next] = pheromone[curr][next] * (1.0 - alpha) + alpha / bestGlobalDist;
-//                pheromone[curr][next] = pheromone[curr][next] + alpha / bestGlobalDist;
-                pheromone[next][curr] = pheromone[curr][next];
-            }
-//        }
+        for (int c = 0; c < P.dimension; c++) {
+            int curr = bestGlobalSolution[c];
+            int next = bestGlobalSolution[(c+1) % P.dimension];
+            pheromone[curr][next] = pheromone[curr][next] * (1.0 - alpha) + alpha / bestGlobalDist;
+            pheromone[next][curr] = pheromone[curr][next];
+        }
 
 #if TIME
         // Check if we can iterate once more
@@ -172,12 +161,12 @@ vector<int> ant_colony(Problem &P, int seed, double alpha, double beta, double r
         iterTime += iterDur;
         auto avgIterTime = iterTime / (iter + 1);
         if (iterTime + avgIterTime >= 176000) {
-            cout << "Seed: " << seed << "   Iter: " << iter << " -> " << P.get_error(bestGlobalSolution) * 100 << endl;
+//            cout << "Seed: " << seed << "   Iter: " << iter << " -> " << P.get_error(bestGlobalSolution) * 100 << endl;
             return bestGlobalSolution;
         }
 #endif
     }
-    cout << "Seed: " << seed << "   Iter: " << iter << " -> " << P.get_error(bestGlobalSolution) * 100 << endl;
+//    cout << "Seed: " << seed << "   Iter: " << iter << " -> " << P.get_error(bestGlobalSolution) * 100 << endl;
     return bestGlobalSolution;
 }
 

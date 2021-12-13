@@ -12,12 +12,12 @@
 using namespace std;
 
 #define SINGLE_RUN 0
-#define PARALLEL_RUN 1
-#define SEARCH_SEED 0
+#define PARALLEL_RUN 0
+#define SEARCH_SEED 1
 
 int main() {
     srand(time(NULL));
-    Problem problem("/Users/mike/Desktop/AI_cup_2021/problems/kroA100.tsp");
+    Problem problem("/Users/mike/Desktop/AI_cup_2021/problems/rat783.tsp");
 
 #if SINGLE_RUN
     problem.print();
