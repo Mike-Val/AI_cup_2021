@@ -23,6 +23,8 @@ public:
 	int best_known_solution;
 	vector<vector<int>> adjacency_matrix;
 
+    Problem() = default;
+
 	explicit Problem(const filesystem::path& path) {
 		ifstream file(path);
 		if (!file.is_open()) {
@@ -50,6 +52,7 @@ public:
 			if (i == 6) {best_known_solution = stoi(row.back()); continue;}
 			if (i >= 8) {
 				nodes.push_back(Tuple(stod(row[1], 0), stod(row[2], 0)));
+//                cout << nodes.back().x << " " << nodes.back().y << endl;
 			}
 		}
 		file.close();
@@ -69,7 +72,7 @@ public:
 		cout << "Best known solution: " << best_known_solution << endl;
 	}
 
-	int get_cost(const vector<int> &solution) {
+	[[nodiscard]] int get_cost(const vector<int> &solution) const {
 		int score = 0;
 		for (int i = 0; i < solution.size(); i++) {
 			score += adjacency_matrix[solution[i]][solution[(i+1) % solution.size()]];
@@ -77,8 +80,11 @@ public:
 		return score;
 	}
 
-    double get_error(const vector<int> &sol) {
-        return 100 * double(get_cost(sol) - best_known_solution) / best_known_solution;
+    [[nodiscard]] double get_error(const vector<int> &sol) const {
+        return double(get_cost(sol) - best_known_solution) / best_known_solution;
+    }
+    [[nodiscard]] double get_error(const double dist) const {
+        return (dist - best_known_solution) / best_known_solution;
     }
 
 	vector<int> nn() {

@@ -24,6 +24,7 @@ int gain(int i, int j, vector<int> &tour, Problem &P) {
 int two_opt_loop(Problem &P, vector<int> &tour, int &len) {
     int cross = 0;
     int n = P.dimension - 1;
+    init:
     for (int i = 1; i < n - 1; i++) {
         for (int j = i + 1; j < n; j++) {
             int new_len = len + gain(i, j, tour, P);
@@ -31,6 +32,7 @@ int two_opt_loop(Problem &P, vector<int> &tour, int &len) {
                 swap2opt(tour, i, j);
                 len = new_len;
                 cross += 1;
+                goto init;
             }
         }
     }

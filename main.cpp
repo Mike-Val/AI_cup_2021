@@ -2,19 +2,25 @@
 #include <ctime>
 #include <vector>
 #include <chrono>
+#include <cmath>
 
 #include "thread_pool.hpp"
 #include "Problem.hpp"
 #include "AntColony.hpp"
+#include "SeedSearch.hpp"
 
 using namespace std;
 
+#define SINGLE_RUN 0
+#define PARALLEL_RUN 1
+#define SEARCH_SEED 0
+
 int main() {
-    Problem problem("/Users/mike/Desktop/AI_cup_2021/problems/pcb442.tsp");
-    problem.print();
-
     srand(time(NULL));
+    Problem problem("/Users/mike/Desktop/AI_cup_2021/problems/kroA100.tsp");
 
+#if SINGLE_RUN
+    problem.print();
     int seed = rand();
     auto start = chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now().time_since_epoch()).count();
 	auto sol = ant_colony(problem, seed, 0.1, 2, 0.1);
@@ -27,13 +33,16 @@ int main() {
 	for (auto i : sol) {
 		cout << i << ", ";
 	}
-    return 0;
+#endif
 
-    int n = 1000;
+#if PARALLEL_RUN
+    int n = 10;
     vector<int> seeds(n);
     vector<int> costs(n);
 
+    problem.print();
     thread_pool pool;
+    cout << "Threads: " << pool.get_thread_count() << endl;
 
     for (int i = 0; i < n; i++) {
         seeds[i] = rand();
@@ -68,6 +77,15 @@ int main() {
         variance_err += pow(err - avg_err, 2);
     }
     variance_err /= n;
+    variance_err = sqrt(variance_err);
 
     cout << "Mean Error: " << 100 * avg_err << endl << "Variance Error: " << 100 * variance_err << endl;
+#endif
+
+#if SEARCH_SEED
+    cout << "Searching best seed" << endl;
+    int tests = 10;
+    int bestSeed = search_seed(tests);
+    cout << "Best seed found: " << bestSeed << endl;
+#endif
 }
