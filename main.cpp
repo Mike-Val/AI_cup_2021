@@ -11,13 +11,24 @@
 
 using namespace std;
 
-#define SINGLE_RUN 0
+#define SINGLE_RUN 1
 #define PARALLEL_RUN 0
-#define SEARCH_SEED 1
+#define SEARCH_SEED 0
+
+//eil76
+//kroA100
+//ch130
+//d198
+//lin318
+//pr439
+//pcb442
+//rat783
+//u1060
+//fl1577
 
 int main() {
     srand(time(NULL));
-    Problem problem("/Users/mike/Desktop/AI_cup_2021/problems/rat783.tsp");
+    Problem problem("fl1577");
 
 #if SINGLE_RUN
     problem.print();

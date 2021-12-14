@@ -22,10 +22,12 @@ public:
 	string edge_weight_type;
 	int best_known_solution;
 	vector<vector<int>> adjacency_matrix;
+    int colony_size = 20;
 
     Problem() = default;
 
-	explicit Problem(const filesystem::path& path) {
+	explicit Problem(const string& prob_name) {
+        filesystem::path path("/Users/mike/Desktop/AI_cup_2021/problems/"+prob_name+".tsp");
 		ifstream file(path);
 		if (!file.is_open()) {
 			cout << "Error: file " << path << " not found" << endl;
@@ -63,6 +65,22 @@ public:
 				adjacency_matrix[i][j] = round(distance);
 			}
 		}
+        file.close();
+
+        // eil76
+        // kroA100
+        // ch130
+        // d198
+        // lin318
+        // pr439
+        // pcb442
+        // rat783
+        // u1060
+        // fl1577
+
+        if (name == "eil76") {
+            colony_size = 20;
+        } else if (name == "kroA100");
 	}
 
 	void print() const {

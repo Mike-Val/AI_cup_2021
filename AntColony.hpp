@@ -38,16 +38,15 @@ vector<int> ant_colony(Problem &P, int seed, double alpha, double beta, double r
     long long iterTime = 0;
 
     // Setup iteration variables
-    bool improved = false;
-    double q_0 = 1 - 13.0 / P.dimension;
+    double q_0 = 1 - 13.0 / P.dimension; q_0 = 0.9;
     auto &adjacency = P.adjacency_matrix;
     vector<int> bestGlobalSolution = P.nn();
     int bestGlobalDist = P.get_cost(bestGlobalSolution);
+    vector<double> candidates(P.dimension);
 
     // Setup Ants
-    int total_ants = 10;
+    int total_ants = 20;
     vector<Ant> ants(total_ants);
-    vector<double> candidates(P.dimension);
 
     // Setup pheromone matrix
     double initial_pheromone = 1.0 / double(bestGlobalDist * P.dimension);
@@ -86,8 +85,8 @@ vector<int> ant_colony(Problem &P, int seed, double alpha, double beta, double r
 
                 double q = dis(gen);
                 if (q > q_0 && sum != candidates[maxCity]) {
-                    sum -= candidates[maxCity];
-                    candidates[maxCity] = 0;
+//                    sum -= candidates[maxCity];
+//                    candidates[maxCity] = 0;
                     double p = dis(gen) * sum;
                     double running_sum = 0;
                     for (int c = 0; c < P.dimension; c++) {

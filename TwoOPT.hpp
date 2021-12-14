@@ -22,21 +22,25 @@ int gain(int i, int j, vector<int> &tour, Problem &P) {
 }
 
 int two_opt_loop(Problem &P, vector<int> &tour, int &len) {
-    int cross = 0;
     int n = P.dimension - 1;
-    init:
+    int best_i = -1, best_j = -1;
+    int best_len = len;
+
     for (int i = 1; i < n - 1; i++) {
         for (int j = i + 1; j < n; j++) {
             int new_len = len + gain(i, j, tour, P);
-            if (new_len < len) {
-                swap2opt(tour, i, j);
-                len = new_len;
-                cross += 1;
-                goto init;
+            if (new_len < best_len) {
+                best_len = new_len;
+                best_i = i;
+                best_j = j;
             }
         }
     }
-    return cross;
+    if (best_i == -1 || best_j == -1) return 0;
+
+    swap2opt(tour, best_i,best_j);
+    len = best_len;
+    return 1;
 }
 
 void two_opt(Problem &P, vector<int> &tour, int &len) {
