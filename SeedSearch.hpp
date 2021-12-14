@@ -21,7 +21,7 @@ using namespace std;
 vector<Problem> load_problems(vector<string> &names) {
     vector<Problem> problems(names.size());
     for (int i = 0; i < names.size(); i++) {
-        problems[i] = Problem("/Users/mike/Desktop/AI_cup_2021/problems/" + names[i] + ".tsp");
+        problems[i] = Problem(names[i]);
     }
     return problems;
 }
@@ -30,6 +30,12 @@ struct ProblemResult {
     string name;
     int dist;
     double error;
+    long long time = 0;
+    double q_0 = 0;
+    double alpha = 0;
+    double beta = 0;
+    double rho = 0;
+    int ants = 0;
 
     ProblemResult() = default;
 };
@@ -51,7 +57,7 @@ void test_seed(Result &result, vector<Problem> &P, int seed) {
         auto &pr = result.results[i];
         auto &p = P[i];
         pr.name = p.name;
-        pr.dist = p.get_cost(ant_colony(p, seed, 0.1, 2, 0.1));
+        pr.dist = p.get_cost(ant_colony(p, seed));
         pr.error = p.get_error(pr.dist) * 100;
         meanError += pr.error;
     }
@@ -93,10 +99,10 @@ int search_seed(int tests = 1) {
 
     vector<Result> results(tests);
     for (Result &r : results) {
-        int seed = rand();
-        r = Result(seed, P.size());
-        pool.push_task([&r, &P, seed](){
-            test_seed(r, P, seed);
+        int problem_seed = rand();
+        r = Result(problem_seed, P.size());
+        pool.push_task([&r, &P, problem_seed](){
+            test_seed(r, P, problem_seed);
         });
     }
 

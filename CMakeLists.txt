@@ -10,4 +10,5 @@ add_executable(AI_cup_2021
         Problem.hpp
         thread_pool.hpp
         AntColony.hpp
-        Matrix.hpp SeedSearch.hpp)
+        Matrix.hpp SeedSearch.hpp
+        SeedTest.hpp)

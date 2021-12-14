@@ -8,12 +8,14 @@
 #include "Problem.hpp"
 #include "AntColony.hpp"
 #include "SeedSearch.hpp"
+#include "SeedTest.hpp"
 
 using namespace std;
 
-#define SINGLE_RUN 1
+#define SINGLE_RUN 0
 #define PARALLEL_RUN 0
 #define SEARCH_SEED 0
+#define TEST_SEED 1092841564
 
 //eil76
 //kroA100
@@ -34,7 +36,7 @@ int main() {
     problem.print();
     int seed = rand();
     auto start = chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now().time_since_epoch()).count();
-	auto sol = ant_colony(problem, seed, 0.1, 2, 0.1);
+	auto sol = ant_colony(problem, seed);
     auto end = chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now().time_since_epoch()).count();
     cout << "Time: " << double(end - start) / 1000 << endl;
     cout << "Seed: " << seed << endl;
@@ -58,7 +60,7 @@ int main() {
     for (int i = 0; i < n; i++) {
         seeds[i] = rand();
         pool.push_task([&costs, &problem](int i, int s) {
-            vector<int> solution = ant_colony(problem, s, 0.1, 2, 0.1);
+            vector<int> solution = ant_colony(problem, s);
             costs[i] = problem.get_cost(solution);
         }, i, seeds[i]);
     }
@@ -98,5 +100,10 @@ int main() {
     int tests = 10;
     int bestSeed = search_seed(tests);
     cout << "Best seed found: " << bestSeed << endl;
+#endif
+
+#if TEST_SEED
+    cout << "Testing seed: " << TEST_SEED << endl;
+    testSeed(TEST_SEED);
 #endif
 }

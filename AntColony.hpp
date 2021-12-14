@@ -29,7 +29,7 @@ struct Ant {
     }
 };
     
-vector<int> ant_colony(Problem &P, int seed, double alpha, double beta, double rho) {
+vector<int> ant_colony(const Problem &P, const int seed) {
     // Setup random generator
     default_random_engine gen(seed);
     uniform_real_distribution<double> dis(0.0, 1.0);
@@ -38,14 +38,17 @@ vector<int> ant_colony(Problem &P, int seed, double alpha, double beta, double r
     long long iterTime = 0;
 
     // Setup iteration variables
-    double q_0 = 1 - 13.0 / P.dimension; q_0 = 0.9;
+    double alpha = P.alpha;
+    double beta = P.beta;
+    double rho = P.rho;
+    double q_0 = P.q_0;
     auto &adjacency = P.adjacency_matrix;
     vector<int> bestGlobalSolution = P.nn();
     int bestGlobalDist = P.get_cost(bestGlobalSolution);
     vector<double> candidates(P.dimension);
 
     // Setup Ants
-    int total_ants = 20;
+    int total_ants = P.colony_size;
     vector<Ant> ants(total_ants);
 
     // Setup pheromone matrix
