@@ -21,7 +21,7 @@ using namespace std;
 vector<Problem> load_problems(vector<string> &names) {
     vector<Problem> problems(names.size());
     for (int i = 0; i < names.size(); i++) {
-        problems[i] = Problem(names[i]);
+        problems[i] = Problem("/Users/mike/Desktop/AI_cup_2021/problems/"+names[i]+".tsp");
     }
     return problems;
 }

@@ -30,6 +30,8 @@ struct Ant {
 };
     
 vector<int> ant_colony(const Problem &P, const int seed) {
+    auto start = high_resolution_clock::now();
+
     // Setup random generator
     default_random_engine gen(seed);
     uniform_real_distribution<double> dis(0.0, 1.0);
@@ -55,11 +57,14 @@ vector<int> ant_colony(const Problem &P, const int seed) {
     double initial_pheromone = 1.0 / double(bestGlobalDist * P.dimension);
     vector<vector<double>> pheromone(P.dimension, vector<double>(P.dimension, initial_pheromone));
 
+    auto end = high_resolution_clock::now();
+    long long setupTime = duration_cast<milliseconds>(end - start).count();
+
     int iter;
     for (iter = 0; bestGlobalDist > P.best_known_solution; iter++) {
 #if TIME
         // Get initial time of iteration
-        auto start = high_resolution_clock::now();
+        start = high_resolution_clock::now();
 #endif
 
         // Initialize all ants to random cities
@@ -158,11 +163,11 @@ vector<int> ant_colony(const Problem &P, const int seed) {
 
 #if TIME
         // Check if we can iterate once more
-        auto end = high_resolution_clock::now();
-        auto iterDur = duration_cast<milliseconds>(end - start).count();
+        end = high_resolution_clock::now();
+        long long iterDur = duration_cast<milliseconds>(end - start).count();
         iterTime += iterDur;
-        auto avgIterTime = iterTime / (iter + 1);
-        if (iterTime + avgIterTime >= 176000) {
+        long long avgIterTime = iterTime / (iter + 1);
+        if (setupTime + iterTime + avgIterTime >= 176000) {
 //            cout << "Seed: " << seed << "   Iter: " << iter << " -> " << P.get_error(bestGlobalSolution) * 100 << endl;
             return bestGlobalSolution;
         }

@@ -31,8 +31,7 @@ public:
 
     Problem() = default;
 
-	explicit Problem(const string& prob_name) {
-        filesystem::path path("/Users/mike/Desktop/AI_cup_2021/problems/"+prob_name+".tsp");
+	explicit Problem(const filesystem::path path) {
 		ifstream file(path);
 		if (!file.is_open()) {
 			cout << "Error: file " << path << " not found" << endl;
@@ -56,7 +55,7 @@ public:
 			if (i == 1) {name = row.back(); continue;}
 			if (i == 4) {
                 dimension = stoi(row.back());
-//                q_0 = 1 - 13.0 / dimension;
+//                q_0 = 1 - 20.0 / dimension;
                 q_0 = 0.9;
                 continue;
             }
@@ -77,33 +76,35 @@ public:
 		}
         file.close();
 
-        if (name == "eil76") {
-            colony_size = 20;
-        } else if (name == "kroA100") {
-            colony_size = 20;
-        } else if (name == "ch130") {
-            colony_size = 20;
-        } else if (name == "d198") {
-            colony_size = 20;
-        } else if (name == "lin318") {
-            colony_size = 20;
-        } else if (name == "pr439") {
-            colony_size = 20;
-        } else if (name == "pcb442") {
-            colony_size = 20;
-        } else if (name == "rat783") {
-            colony_size = 10;
-        } else if (name == "u1060") {
-            colony_size = 10;
-        } else if (name == "fl1577") {
-            colony_size = 10;
-        }
+        if (dimension < 700) colony_size = 20;
+        else colony_size = 10;
+
+//        if (name == "eil76") {
+//            colony_size = 20;
+//        } else if (name == "kroA100") {
+//            colony_size = 20;
+//        } else if (name == "ch130") {
+//            colony_size = 20;
+//        } else if (name == "d198") {
+//            colony_size = 20;
+//        } else if (name == "lin318") {
+//            colony_size = 20;
+//        } else if (name == "pr439") {
+//            colony_size = 20;
+//        } else if (name == "pcb442") {
+//            colony_size = 20;
+//        } else if (name == "rat783") {
+//            colony_size = 10;
+//        } else if (name == "u1060") {
+//            colony_size = 10;
+//        } else if (name == "fl1577") {
+//            colony_size = 10;
+//        }
 	}
 
 	void print() const {
 		cout << "Name: " << name << endl;
 		cout << "Dimension: " << dimension << endl;
-		cout << "Edge weight type: " << edge_weight_type << endl;
 		cout << "Best known solution: " << best_known_solution << endl;
 	}
 
@@ -145,6 +146,27 @@ public:
 
 		return path;
 	}
+
+    [[nodiscard]] bool save_solution(const vector<int> &solution, const string &path) const {
+        ofstream file(path);
+        if (!file.is_open()) {
+            cout << "Error: file " << path << " not found" << endl;
+            return false;
+        }
+        file << "NAME: " << name << endl;
+        file << "TYPE: TSP" << endl;
+        file << "DIMENSION: " << dimension << endl;
+        file << "BEST_KNOWN: " << best_known_solution << endl;
+        file << "FOUND_SOLUTION_COST: " << get_cost(solution) << endl;
+        file << "TOUR_SECTION" << endl;
+        for (int i : solution) {
+            file << i + 1 << endl;
+        }
+        file << "EOF" << endl;
+        file.close();
+        return true;
+    }
+
 };
 
 #endif

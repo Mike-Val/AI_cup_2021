@@ -11,28 +11,18 @@
 #include "SeedTest.hpp"
 
 using namespace std;
+using namespace chrono;
 
 #define SINGLE_RUN 0
 #define PARALLEL_RUN 0
 #define SEARCH_SEED 0
-#define TEST_SEED 1092841564
+#define TEST_SEED 0//1092841564
+#define MANUAL_TEST 1
 
-//eil76
-//kroA100
-//ch130
-//d198
-//lin318
-//pr439
-//pcb442
-//rat783
-//u1060
-//fl1577
-
-int main() {
+int main(int argc, char *argv[]) {
+#if SINGLE_RUN
     srand(time(NULL));
     Problem problem("fl1577");
-
-#if SINGLE_RUN
     problem.print();
     int seed = rand();
     auto start = chrono::duration_cast<chrono::milliseconds>(chrono::system_clock::now().time_since_epoch()).count();
@@ -49,6 +39,8 @@ int main() {
 #endif
 
 #if PARALLEL_RUN
+    srand(time(NULL));
+    Problem problem("fl1577");
     int n = 10;
     vector<int> seeds(n);
     vector<int> costs(n);
@@ -106,4 +98,22 @@ int main() {
     cout << "Testing seed: " << TEST_SEED << endl;
     testSeed(TEST_SEED);
 #endif
+
+#if MANUAL_TEST
+    int seed = atoi(argv[1]);
+    Problem problem(argv[2]);
+    problem.print();
+    cout << "Start solver? (y/n)   ";
+    char c; cin >> c; if (c != 'y') return 0;
+    cout << "------------------" << endl;
+    auto start = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+    auto sol = ant_colony(problem, seed);
+    auto end = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+    cout << "Time: " << double(end - start) / 1000 << " s" << endl;
+    cout << "Dist: " << problem.get_cost(sol) << endl;
+    cout << "Error: " << 100 * problem.get_error(sol) << " %" << endl;
+    cout << "------------------" << endl;
+    if (argc == 4 && problem.save_solution(sol, argv[3])) cout << "Solution saved to " << argv[3] << endl;
+#endif
+
 }
