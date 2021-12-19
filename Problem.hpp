@@ -11,6 +11,7 @@
 #include <cmath>
 #include <random>
 #include <sstream>
+#include <climits>
 
 using namespace std;
 
@@ -19,10 +20,9 @@ class Problem {
 public:
 	string name;
 	int dimension;
-	string edge_weight_type;
 	int best_known_solution;
 	vector<vector<int>> adjacency_matrix;
-    int colony_size = 12;
+    int colony_size;
     double alpha = 0.1;
     double beta = 2;
     double rho = 0.1;
@@ -31,7 +31,7 @@ public:
 
     Problem() = default;
 
-	explicit Problem(const filesystem::path path) {
+	explicit Problem(const filesystem::path& path) {
 		ifstream file(path);
 		if (!file.is_open()) {
 			cout << "Error: file " << path << " not found" << endl;
@@ -55,11 +55,10 @@ public:
 			if (i == 1) {name = row.back(); continue;}
 			if (i == 4) {
                 dimension = stoi(row.back());
-//                q_0 = 1 - 20.0 / dimension;
+//                q_0 = 1 - 13.0 / dimension;
                 q_0 = 0.9;
                 continue;
             }
-			if (i == 5) {edge_weight_type = row.back(); continue;}
 			if (i == 6) {best_known_solution = stoi(row.back()); continue;}
 			if (i >= 8) {
 				nodes.push_back(Tuple(stod(row[1], 0), stod(row[2], 0)));
@@ -78,28 +77,6 @@ public:
 
         if (dimension < 700) colony_size = 20;
         else colony_size = 10;
-
-//        if (name == "eil76") {
-//            colony_size = 20;
-//        } else if (name == "kroA100") {
-//            colony_size = 20;
-//        } else if (name == "ch130") {
-//            colony_size = 20;
-//        } else if (name == "d198") {
-//            colony_size = 20;
-//        } else if (name == "lin318") {
-//            colony_size = 20;
-//        } else if (name == "pr439") {
-//            colony_size = 20;
-//        } else if (name == "pcb442") {
-//            colony_size = 20;
-//        } else if (name == "rat783") {
-//            colony_size = 10;
-//        } else if (name == "u1060") {
-//            colony_size = 10;
-//        } else if (name == "fl1577") {
-//            colony_size = 10;
-//        }
 	}
 
 	void print() const {
@@ -123,7 +100,7 @@ public:
         return (dist - best_known_solution) / best_known_solution;
     }
 
-	vector<int> nn() const {
+	[[nodiscard]] vector<int> nn() const {
 		vector<int> path(dimension);
 		vector<char> visited(dimension, 0);
 		

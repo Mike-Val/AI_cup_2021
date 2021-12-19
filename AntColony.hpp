@@ -5,6 +5,7 @@
 #include <random>
 #include <iostream>
 #include <chrono>
+#include <climits>
 
 #include "Problem.hpp"
 #include "TwoOPT.hpp"
