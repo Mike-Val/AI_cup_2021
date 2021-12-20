@@ -20,14 +20,25 @@ struct Ant {
     vector<char> visited;
     int current = 0;
     int dist = 0;
+    int currentCity = -1;
+    int prevCity = -1;
 
     Ant() = default;
     void init(int dim) {
-        current = 0;
+        current = -1;
         dist = 0;
         path = vector<int>(dim);
         visited = vector<char>(dim, 0);
     }
+
+    void move(int next) {
+        prevCity = currentCity;
+        currentCity = next;
+        current += 1;
+        path[current] = next;
+        visited[next] = 1;
+    }
+
 };
     
 vector<int> ant_colony(const Problem &P, const int seed) {
@@ -71,8 +82,7 @@ vector<int> ant_colony(const Problem &P, const int seed) {
         // Initialize all ants to random cities
         for (Ant &a : ants) {
             a.init(P.dimension);
-            a.path[a.current] = int(dis(gen) * P.dimension);
-            a.visited[a.path[a.current]] = 1;
+            a.move(int(dis(gen) * P.dimension));
         }
 
         for (int step = 1; step < P.dimension; step++) {
@@ -83,7 +93,7 @@ vector<int> ant_colony(const Problem &P, const int seed) {
                 double sum = 0;
                 for (int c = 0; c < P.dimension; c++) {
                     if (ant.visited[c] == 0) {
-                        double prob = pheromone[ant.path[ant.current]][c] * pow(adjacency[ant.path[ant.current]][c], -beta);
+                        double prob = pheromone[ant.currentCity][c] * pow(adjacency[ant.currentCity][c], -beta);
                         candidates[c] = prob;
                         sum += prob;
                         if (maxCity == -1 || prob > candidates[maxCity]) {
@@ -106,14 +116,12 @@ vector<int> ant_colony(const Problem &P, const int seed) {
                         }
                     }
                 }
-                ant.dist += adjacency[ant.path[ant.current]][maxCity];
-                ant.current += 1;
-                ant.path[ant.current] = maxCity;
-                ant.visited[maxCity] = 1;
+                ant.dist += adjacency[ant.currentCity][maxCity];
+                ant.move(maxCity);
 
                 // Local update
-                int prev = ant.path[ant.current-1];
-                int curr = ant.path[ant.current];
+                int prev = ant.currentCity;
+                int curr = ant.prevCity;
                 pheromone[prev][curr] = pheromone[prev][curr] * (1.0 - rho) + rho * initial_pheromone;
                 pheromone[curr][prev] = pheromone[prev][curr];
             }
@@ -133,7 +141,6 @@ vector<int> ant_colony(const Problem &P, const int seed) {
             }
         }
 
-//        cout << "Iter: " << iter << "    Best Global: " << bestGlobalDist << "   Best Iter: " << bestAntDist << "    Same: " << (bestAntDist == bestGlobalDist) << endl;
 
         // Two opt best ant
         two_opt(P, bestAntSolution, bestAntDist);
@@ -169,12 +176,10 @@ vector<int> ant_colony(const Problem &P, const int seed) {
         iterTime += iterDur;
         long long avgIterTime = iterTime / (iter + 1);
         if (setupTime + iterTime + avgIterTime >= 176000) {
-//            cout << "Seed: " << seed << "   Iter: " << iter << " -> " << P.get_error(bestGlobalSolution) * 100 << endl;
             return bestGlobalSolution;
         }
 #endif
     }
-//    cout << "Seed: " << seed << "   Iter: " << iter << " -> " << P.get_error(bestGlobalSolution) * 100 << endl;
     return bestGlobalSolution;
 }
 

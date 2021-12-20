@@ -103,8 +103,7 @@ int main(int argc, char *argv[]) {
     int seed = atoi(argv[1]);
     Problem problem(argv[2]);
     problem.print();
-    cout << "Start solver? (y/n)   ";
-    char c; cin >> c; if (c != 'y') return 0;
+    cout << "Starting solver" << endl;
     cout << "------------------" << endl;
     auto start = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
     auto sol = ant_colony(problem, seed);
