@@ -24,7 +24,7 @@ struct Ant {
     int prevCity = -1;
 
     Ant() = default;
-    void init(int dim) {
+    void reset(int dim) {
         current = -1;
         dist = 0;
         path = vector<int>(dim);
@@ -40,7 +40,7 @@ struct Ant {
     }
 
 };
-    
+
 vector<int> ant_colony(const Problem &P, const int seed) {
     auto start = high_resolution_clock::now();
 
@@ -81,7 +81,7 @@ vector<int> ant_colony(const Problem &P, const int seed) {
 
         // Initialize all ants to random cities
         for (Ant &a : ants) {
-            a.init(P.dimension);
+            a.reset(P.dimension);
             a.move(int(dis(gen) * P.dimension));
         }
 
@@ -127,38 +127,31 @@ vector<int> ant_colony(const Problem &P, const int seed) {
             }
         }
         // Get best ant
-        vector<int> &bestAntSolution = ants[0].path;
-        int bestAntDist = INT_MAX;
+        Ant &bestAnt = ants[0];
         for (Ant &a : ants) {
             int prev = a.path[P.dimension-1];
             int curr = a.path[0];
             pheromone[prev][curr] = pheromone[prev][curr] * (1.0 - rho) + rho * initial_pheromone;
             pheromone[curr][prev] = pheromone[prev][curr];
             a.dist += adjacency[prev][curr];
-            if (a.dist < bestAntDist) {
-                bestAntDist = a.dist;
-                bestAntSolution = a.path;
-            }
+            if (a.dist < bestAnt.dist) bestAnt = a;
         }
 
 
         // Two opt best ant
-        two_opt(P, bestAntSolution, bestAntDist);
+        two_opt(P, bestAnt.path, bestAnt.dist);
 
         // Two opt random ants
         for (int i = 0; i < 1; i++) {
             Ant &randomAnt = ants[int(dis(gen) * total_ants)];
             two_opt(P, randomAnt.path, randomAnt.dist);
-            if (randomAnt.dist < bestAntDist) {
-                bestAntDist = randomAnt.dist;
-                bestAntSolution = randomAnt.path;
-            }
+            if (randomAnt.dist < bestAnt.dist) bestAnt = randomAnt;
         }
 
         // Get best path
-        if (bestAntDist < bestGlobalDist) {
-            bestGlobalDist = bestAntDist;
-            bestGlobalSolution = bestAntSolution;
+        if (bestAnt.dist < bestGlobalDist) {
+            bestGlobalDist = bestAnt.dist;
+            bestGlobalSolution = bestAnt.path;
         }
 
         // Global Update

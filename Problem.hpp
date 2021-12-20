@@ -93,6 +93,15 @@ public:
 		return score;
 	}
 
+    [[nodiscard]] bool valid(const vector<int> &solution) const {
+        vector<char> visited(dimension, 0);
+        for (int i : solution) {
+            if (visited[i]) return false;
+            visited[i] = 1;
+        }
+        return true;
+    }
+
     [[nodiscard]] double get_error(const vector<int> &sol) const {
         return double(get_cost(sol) - best_known_solution) / best_known_solution;
     }
