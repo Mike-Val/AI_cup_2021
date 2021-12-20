@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
     auto start = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
     auto sol = ant_colony(problem, seed);
     auto end = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
-    assert(P.valid(sol));
+    assert(problem.valid(sol));
     cout << "Time: " << double(end - start) / 1000 << " s" << endl;
     cout << "Dist: " << problem.get_cost(sol) << endl;
     cout << "Error: " << 100 * problem.get_error(sol) << " %" << endl;
